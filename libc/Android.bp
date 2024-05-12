@@ -148,13 +148,12 @@ cc_defaults {
         },
     },
 
-    lto: {
-        never: true,
-    },
-
     apex_available: ["com.android.runtime"],
 
     tidy_disabled_srcs: ["upstream-*/**/*.c"],
+    lto: {
+        thin: true,
+    },
 }
 
 libc_scudo_product_variables = {
@@ -845,6 +844,14 @@ cc_library_static {
                 "arch-arm64/string/__memcpy_chk.S",
                 "arch-arm64/string/__memset_chk.S",
             ],
+            kryo: {
+                srcs: [
+                    "arch-arm64/kryo/bionic/__memcpy_chk.S",
+                ],
+                exclude_srcs: [
+                    "arch-arm64/generic/bionic/__memcpy_chk.S",
+                ],
+            },
         },
         riscv64: {
             srcs: [
@@ -933,12 +940,29 @@ cc_library_static {
         },
         arm64: {
             srcs: [
+                "arch-arm64/kryo785/bionic/__memcpy.S",
+                "arch-arm64/kryo785/bionic/memcpy.S",
+                "arch-arm64/kryo785/bionic/memmove.S",
+
                 "arch-arm64/bionic/__bionic_clone.S",
                 "arch-arm64/bionic/_exit_with_stack_teardown.S",
                 "arch-arm64/bionic/setjmp.S",
                 "arch-arm64/bionic/syscall.S",
                 "arch-arm64/bionic/vfork.S",
             ],
+            kryo: {
+                srcs: [
+                    "arch-arm64/kryo/bionic/__memcpy.S",
+                    "arch-arm64/kryo/bionic/memcpy.S",
+                    "arch-arm64/kryo/bionic/memmove.S",
+                    "arch-arm64/kryo/bionic/wmemmove.S",
+                ],
+                exclude_srcs: [
+                    "arch-arm64/generic/bionic/memcpy.S",
+                    "arch-arm64/generic/bionic/memmove.S",
+                    "arch-arm64/generic/bionic/wmemmove.S",
+                ],
+            },
         },
 
         riscv64: {
@@ -1427,6 +1451,9 @@ cc_library_static {
         },
     },
     name: "libc_syscalls",
+    lto: {
+        never: true,
+    },
 }
 
 // ========================================================
@@ -1688,6 +1715,9 @@ cc_library_static {
         "libc_init_static",
         "libc_unwind_static",
     ],
+    lto: {
+        never: true,
+    },
 }
 
 filegroup {
@@ -1787,6 +1817,10 @@ cc_defaults {
     static_libs: [
         "libdl_android",
     ],
+
+    lto: {
+        never: true,
+    },
 
     nocrt: true,
 
